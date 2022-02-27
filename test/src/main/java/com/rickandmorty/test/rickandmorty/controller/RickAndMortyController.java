@@ -25,13 +25,18 @@ public class RickAndMortyController {
 
 	@GetMapping(value="/character/{idCharacter}")
 	public ResponseEntity<?> ObtenerCasosEmpresa(@PathVariable("idCharacter") Integer idCharacter){
-		RestTemplate rest=new RestTemplate();
-		CharacterApiDto result=rest.getForObject(url+"/character/"+idCharacter,CharacterApiDto.class);
-		LocationApiDto resultLocations=new LocationApiDto();
-		if(result.getOrigin().getUrl()!="") {
-			resultLocations=rest.getForObject(result.getOrigin().getUrl(),LocationApiDto.class);
+		try {
+			RestTemplate rest=new RestTemplate();
+			CharacterApiDto result=rest.getForObject(url+"/character/"+idCharacter,CharacterApiDto.class);
+			LocationApiDto resultLocations=new LocationApiDto();
+			if(result.getOrigin().getUrl()!="") {
+				resultLocations=rest.getForObject(result.getOrigin().getUrl(),LocationApiDto.class);
+			}
+			CharacterDto character = service.parseApiDataToCharacterDto(result, resultLocations);
+			return new ResponseEntity<CharacterDto>(character, HttpStatus.OK);	
+		}catch(Exception e){
+			return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		CharacterDto character = service.parseApiDataToCharacterDto(result, resultLocations);
-		 return new ResponseEntity<CharacterDto>(character, HttpStatus.OK);	
+		
 	}
 }
