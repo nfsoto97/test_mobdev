@@ -25,7 +25,6 @@ public class RickAndMortyController {
 
 	@GetMapping(value="/character/{idCharacter}")
 	public ResponseEntity<?> ObtenerCasosEmpresa(@PathVariable("idCharacter") Integer idCharacter){
-//		List<?> casos = service.listarCasosEmpresa(idFicha);
 		RestTemplate rest=new RestTemplate();
 		CharacterApiDto result=rest.getForObject(url+"/character/"+idCharacter,CharacterApiDto.class);
 		LocationApiDto resultLocations=new LocationApiDto();
